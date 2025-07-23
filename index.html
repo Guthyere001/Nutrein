@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrein - Saúde, Esportes e Bem-estar</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header com navegação fixa -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h1>Nutrein</h1>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#home" class="nav-link active">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#blog" class="nav-link">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#loja" class="nav-link">Loja</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#profissionais" class="nav-link">Profissionais</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#exercicios" class="nav-link">Exercícios</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Seção Home -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Transforme sua vida com <span class="highlight">Nutrein</span></h1>
+                <p class="hero-subtitle">Sua plataforma completa para saúde, esportes e bem-estar. Conecte-se com profissionais especializados e alcance seus objetivos.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary">Começar Agora</button>
+                    <button class="btn btn-secondary">Saiba Mais</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="/placeholder.svg?height=400&width=600" alt="Pessoas praticando exercícios">
+            </div>
+        </section>
+
+        <!-- Seção Blog -->
+        <section id="blog" class="section">
+            <div class="container">
+                <h2 class="section-title">Blog</h2>
+                <p class="section-subtitle">Artigos e dicas para uma vida mais saudável</p>
+                <div class="blog-grid">
+                    <article class="blog-card">
+                        <img src="/placeholder.svg?height=200&width=300" alt="Alimentação saudável">
+                        <div class="blog-content">
+                            <h3>Nutrição Esportiva: Guia Completo</h3>
+                            <p>Descubra como otimizar sua alimentação para melhor performance nos treinos.</p>
+                            <a href="#" class="read-more">Ler mais <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </article>
+                    <article class="blog-card">
+                        <img src="/placeholder.svg?height=200&width=300" alt="Exercícios em casa">
+                        <div class="blog-content">
+                            <h3>Treino em Casa: 10 Exercícios Essenciais</h3>
+                            <p>Mantenha-se ativo com exercícios que podem ser feitos no conforto de casa.</p>
+                            <a href="#" class="read-more">Ler mais <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </article>
+                    <article class="blog-card">
+                        <img src="/placeholder.svg?height=200&width=300" alt="Bem-estar mental">
+                        <div class="blog-content">
+                            <h3>Saúde Mental e Exercícios</h3>
+                            <p>Como a atividade física pode melhorar seu bem-estar mental e qualidade de vida.</p>
+                            <a href="#" class="read-more">Ler mais <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Loja -->
+        <section id="loja" class="section bg-light">
+            <div class="container">
+                <h2 class="section-title">Loja</h2>
+                <p class="section-subtitle">Produtos selecionados para sua jornada de bem-estar</p>
+                <div class="products-grid">
+                    <div class="product-card">
+                        <img src="/placeholder.svg?height=250&width=250" alt="Suplementos">
+                        <div class="product-info">
+                            <h3>Suplementos</h3>
+                            <p>Linha completa de suplementos nutricionais</p>
+                            <span class="price">A partir de R$ 49,90</span>
+                            <button class="btn btn-primary">Ver Produtos</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <img src="/placeholder.svg?height=250&width=250" alt="Equipamentos">
+                        <div class="product-info">
+                            <h3>Equipamentos</h3>
+                            <p>Acessórios para treino em casa</p>
+                            <span class="price">A partir de R$ 29,90</span>
+                            <button class="btn btn-primary">Ver Produtos</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <img src="/placeholder.svg?height=250&width=250" alt="Roupas esportivas">
+                        <div class="product-info">
+                            <h3>Roupas Esportivas</h3>
+                            <p>Vestuário confortável para seus treinos</p>
+                            <span class="price">A partir de R$ 79,90</span>
+                            <button class="btn btn-primary">Ver Produtos</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Profissionais -->
+        <section id="profissionais" class="section">
+            <div class="container">
+                <h2 class="section-title">Profissionais</h2>
+                <p class="section-subtitle">Conecte-se com especialistas em saúde e esportes</p>
+                
+                <div class="professionals-categories">
+                    <div class="category">
+                        <h3 class="category-title">
+                            <i class="fas fa-running"></i>
+                            Esportes
+                        </h3>
+                        <div class="professionals-grid">
+                            <div class="professional-card">
+                                <img src="/placeholder.svg?height=150&width=150" alt="Treinador de Handebol">
+                                <h4>Handebol</h4>
+                                <p>Especialistas em técnicas e táticas</p>
+                            </div>
+                            <div class="professional-card">
+                                <img src="/placeholder.svg?height=150&width=150" alt="Treinador de Vôlei">
+                                <h4>Vôlei</h4>
+                                <p>Treinamento técnico e físico</p>
+                            </div>
+                            <div class="professional-card">
+                                <img src="/placeholder.svg?height=150&width=150" alt="Treinador de Basquete">
+                                <h4>Basquete</h4>
+                                <p>Desenvolvimento de habilidades</p>
+                            </div>
+                            <div class="professional-card">
+                                <img src="/placeholder.svg?height=150&width=150" alt="Treinador de Futebol">
+                                <h4>Futebol/Futsal</h4>
+                                <p>Técnica e preparação física</p>
+                            </div>
+                            <div class="professional-card">
+                                <img src="/placeholder.svg?height=150&width=150" alt="Treinador de Boxe">
+                                <h4>Boxe</h4>
+                                <p>Condicionamento e técnica</p>
+                            </div>
+                            <div class="professional-card">
+                                <img src="/placeholder.svg?height=150&width=150" alt="Sensei de Karatê">
+                                <h4>Karatê</h4>
+                                <p>Arte marcial tradicional</p>
+                            </div>
+                            <div class="professional-card">
+                                <img src="/placeholder.svg?height=150&width=150" alt="Treinador de Muay Thai">
+                                <h4>Muay Thai</h4>
+                                <p>Arte marcial tailandesa</p>
+                            </div>
+                            <div class="professional-card">
+                                <img src="/placeholder.svg?height=150&width=150" alt="Professor de Jiu-Jitsu">
+                                <h4>Jiu-Jitsu</h4>
+                                <p>Arte suave brasileira</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="category">
+                        <h3 class="category-title">
+                            <i class="fas fa-heartbeat"></i>
+                            Saúde
+                        </h3>
+                        <div class="professionals-grid">
+                            <div class="professional-card">
+                                <img src="/placeholder.svg?height=150&width=150" alt="Ortopedista">
+                                <h4>Ortopedista</h4>
+                                <p>Especialista em lesões esportivas</p>
+                            </div>
+                            <div class="professional-card">
+                                <img src="/placeholder.svg?height=150&width=150" alt="Nutricionista">
+                                <h4>Nutricionista</h4>
+                                <p>Alimentação e performance</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Exercícios -->
+        <section id="exercicios" class="section bg-light">
+            <div class="container">
+                <h2 class="section-title">Exercícios</h2>
+                <p class="section-subtitle">Programas de treino personalizados para seus objetivos</p>
+                <div class="exercises-grid">
+                    <div class="exercise-card">
+                        <div class="exercise-icon">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <h3>Força e Resistência</h3>
+                        <p>Desenvolva músculos e aumente sua resistência com treinos estruturados.</p>
+                        <button class="btn btn-outline">Ver Treinos</button>
+                    </div>
+                    <div class="exercise-card">
+                        <div class="exercise-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3>Cardio</h3>
+                        <p>Melhore sua capacidade cardiovascular com exercícios aeróbicos.</p>
+                        <button class="btn btn-outline">Ver Treinos</button>
+                    </div>
+                    <div class="exercise-card">
+                        <div class="exercise-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <h3>Flexibilidade</h3>
+                        <p>Aumente sua flexibilidade e mobilidade com alongamentos e yoga.</p>
+                        <button class="btn btn-outline">Ver Treinos</button>
+                    </div>
+                    <div class="exercise-card">
+                        <div class="exercise-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <h3>Treino em Casa</h3>
+                        <p>Exercícios eficazes que podem ser feitos no conforto de casa.</p>
+                        <button class="btn btn-outline">Ver Treinos</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Nutrein</h3>
+                    <p>Transformando vidas através da saúde, esportes e bem-estar.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Links Rápidos</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                        <li><a href="#loja">Loja</a></li>
+                        <li><a href="#profissionais">Profissionais</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <p><i class="fas fa-envelope"></i> contato@nutrein.com</p>
+                    <p><i class="fas fa-phone"></i> (11) 9999-9999</p>
+                    <p><i class="fas fa-map-marker-alt"></i> São Paulo, SP</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Nutrein. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
