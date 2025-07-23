@@ -1,4 +1,132 @@
-// Navegação móvel
+// Sistema de navegação por cliques (sem scroll)
+class SectionNavigator {
+  constructor() {
+    this.sections = document.querySelectorAll(".section, .hero")
+    this.navLinks = document.querySelectorAll(".nav-link")
+    this.currentSection = 0
+    this.isAnimating = false
+
+    this.init()
+  }
+
+  init() {
+    // Configurar seções iniciais
+    this.sections.forEach((section, index) => {
+      if (index === 0) {
+        section.classList.add("active")
+      } else {
+        section.classList.remove("active")
+      }
+    })
+
+    // Event listeners para navegação
+    this.navLinks.forEach((link, index) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault()
+        this.navigateToSection(index)
+      })
+    })
+
+    // Navegação por teclado
+    document.addEventListener("keydown", (e) => {
+      if (this.isAnimating) return
+
+      switch (e.key) {
+        case "ArrowRight":
+        case "ArrowDown":
+          this.nextSection()
+          break
+        case "ArrowLeft":
+        case "ArrowUp":
+          this.prevSection()
+          break
+        case "Home":
+          this.navigateToSection(0)
+          break
+        case "End":
+          this.navigateToSection(this.sections.length - 1)
+          break
+      }
+    })
+
+    // Botões de navegação nos cards
+    this.setupCardNavigation()
+  }
+
+  navigateToSection(targetIndex) {
+    if (this.isAnimating || targetIndex === this.currentSection) return
+
+    this.isAnimating = true
+
+    // Remover classe active da seção atual
+    this.sections[this.currentSection].classList.remove("active")
+
+    // Adicionar classe prev se indo para trás
+    if (targetIndex < this.currentSection) {
+      this.sections[targetIndex].classList.add("prev")
+    } else {
+      this.sections[targetIndex].classList.remove("prev")
+    }
+
+    // Pequeno delay para suavizar transição
+    setTimeout(() => {
+      this.sections[targetIndex].classList.add("active")
+      this.sections[targetIndex].classList.remove("prev")
+
+      // Atualizar navegação ativa
+      this.updateActiveNav(targetIndex)
+      this.currentSection = targetIndex
+
+      setTimeout(() => {
+        this.isAnimating = false
+      }, 500)
+    }, 50)
+  }
+
+  nextSection() {
+    const next = (this.currentSection + 1) % this.sections.length
+    this.navigateToSection(next)
+  }
+
+  prevSection() {
+    const prev = (this.currentSection - 1 + this.sections.length) % this.sections.length
+    this.navigateToSection(prev)
+  }
+
+  updateActiveNav(activeIndex) {
+    this.navLinks.forEach((link, index) => {
+      link.classList.toggle("active", index === activeIndex)
+    })
+  }
+
+  setupCardNavigation() {
+    // Botões "Ver mais" no blog levam para próxima seção
+    document.querySelectorAll(".read-more").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault()
+        this.nextSection()
+      })
+    })
+
+    // Botões "Ver Produtos" levam para loja
+    document.querySelectorAll(".product-card .btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault()
+        this.navigateToSection(2) // Seção loja
+      })
+    })
+
+    // Botões "Ver Treinos" levam para exercícios
+    document.querySelectorAll(".exercise-card .btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault()
+        this.navigateToSection(4) // Seção exercícios
+      })
+    })
+  }
+}
+
+// Menu mobile
 const hamburger = document.querySelector(".hamburger")
 const navMenu = document.querySelector(".nav-menu")
 
@@ -15,44 +143,7 @@ document.querySelectorAll(".nav-link").forEach((n) =>
   }),
 )
 
-// Navegação suave e ativa
-const navLinks = document.querySelectorAll(".nav-link")
-const sections = document.querySelectorAll("section[id]")
-
-// Função para atualizar link ativo
-function updateActiveLink() {
-  let current = ""
-
-  sections.forEach((section) => {
-    const sectionTop = section.offsetTop
-    const sectionHeight = section.clientHeight
-    if (scrollY >= sectionTop - 200) {
-      current = section.getAttribute("id")
-    }
-  })
-
-  navLinks.forEach((link) => {
-    link.classList.remove("active")
-    if (link.getAttribute("href") === `#${current}`) {
-      link.classList.add("active")
-    }
-  })
-}
-
-// Atualizar link ativo no scroll
-window.addEventListener("scroll", updateActiveLink)
-
-// Header transparente no scroll
-const header = document.querySelector(".header")
-window.addEventListener("scroll", () => {
-  if (window.scrollY > 100) {
-    header.style.background = "rgba(255, 250, 250, 0.98)"
-  } else {
-    header.style.background = "rgba(255, 250, 250, 0.95)"
-  }
-})
-
-// Animação de entrada dos elementos
+// Animações de entrada dos elementos
 const observerOptions = {
   threshold: 0.1,
   rootMargin: "0px 0px -50px 0px",
@@ -91,16 +182,7 @@ function typeWriter(element, text, speed = 100) {
   type()
 }
 
-// Aplicar efeito de digitação quando a página carregar
-window.addEventListener("load", () => {
-  const heroTitle = document.querySelector(".hero-title")
-  if (heroTitle) {
-    const originalText = heroTitle.textContent
-    typeWriter(heroTitle, originalText, 50)
-  }
-})
-
-// Contador animado para estatísticas (se necessário)
+// Contador animado para estatísticas
 function animateCounter(element, target, duration = 2000) {
   let start = 0
   const increment = target / (duration / 16)
@@ -118,139 +200,146 @@ function animateCounter(element, target, duration = 2000) {
   updateCounter()
 }
 
-// Validação de formulário (para futuras implementações)
-function validateForm(form) {
-  const inputs = form.querySelectorAll("input[required], textarea[required]")
-  let isValid = true
+// Partículas de fundo animadas
+function createParticles() {
+  const particlesContainer = document.createElement("div")
+  particlesContainer.className = "particles-container"
+  particlesContainer.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+  `
 
-  inputs.forEach((input) => {
-    if (!input.value.trim()) {
-      input.classList.add("error")
-      isValid = false
-    } else {
-      input.classList.remove("error")
+  for (let i = 0; i < 50; i++) {
+    const particle = document.createElement("div")
+    particle.className = "particle"
+    particle.style.cssText = `
+      position: absolute;
+      width: ${Math.random() * 4 + 2}px;
+      height: ${Math.random() * 4 + 2}px;
+      background: ${["#26619c", "#8A2BE2", "#4169E1", "#1E90FF"][Math.floor(Math.random() * 4)]};
+      border-radius: 50%;
+      opacity: ${Math.random() * 0.5 + 0.2};
+      left: ${Math.random() * 100}%;
+      top: ${Math.random() * 100}%;
+      animation: float ${Math.random() * 10 + 5}s infinite linear;
+    `
+    particlesContainer.appendChild(particle)
+  }
+
+  document.body.appendChild(particlesContainer)
+}
+
+// CSS para animação das partículas
+const particleStyles = document.createElement("style")
+particleStyles.textContent = `
+  @keyframes float {
+    0% {
+      transform: translateY(100vh) rotate(0deg);
     }
-  })
-
-  return isValid
-}
-
-// Lazy loading para imagens
-if ("IntersectionObserver" in window) {
-  const imageObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const img = entry.target
-        img.src = img.dataset.src
-        img.classList.remove("lazy")
-        imageObserver.unobserve(img)
-      }
-    })
-  })
-
-  document.querySelectorAll("img[data-src]").forEach((img) => {
-    imageObserver.observe(img)
-  })
-}
-
-// Função para scroll suave personalizado
-function smoothScrollTo(target, duration = 1000) {
-  const targetElement = document.querySelector(target)
-  if (!targetElement) return
-
-  const targetPosition = targetElement.offsetTop - 70 // Compensar header fixo
-  const startPosition = window.pageYOffset
-  const distance = targetPosition - startPosition
-  let startTime = null
-
-  function animation(currentTime) {
-    if (startTime === null) startTime = currentTime
-    const timeElapsed = currentTime - startTime
-    const run = ease(timeElapsed, startPosition, distance, duration)
-    window.scrollTo(0, run)
-    if (timeElapsed < duration) requestAnimationFrame(animation)
+    100% {
+      transform: translateY(-100vh) rotate(360deg);
+    }
   }
+`
+document.head.appendChild(particleStyles)
 
-  function ease(t, b, c, d) {
-    t /= d / 2
-    if (t < 1) return (c / 2) * t * t + b
-    t--
-    return (-c / 2) * (t * (t - 2) - 1) + b
-  }
+// Indicador de seção atual
+function createSectionIndicator() {
+  const indicator = document.createElement("div")
+  indicator.className = "section-indicator"
+  indicator.style.cssText = `
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  `
 
-  requestAnimationFrame(animation)
-}
-
-// Aplicar scroll suave aos links de navegação
-navLinks.forEach((link) => {
-  link.addEventListener("click", (e) => {
-    e.preventDefault()
-    const target = link.getAttribute("href")
-    smoothScrollTo(target)
-  })
-})
-
-// Botão "voltar ao topo" (implementação futura)
-function createBackToTopButton() {
-  const button = document.createElement("button")
-  button.innerHTML = '<i class="fas fa-arrow-up"></i>'
-  button.className = "back-to-top"
-  button.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        cursor: pointer;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
-        z-index: 1000;
+  const sections = ["Home", "Blog", "Loja", "Profissionais", "Exercícios"]
+  sections.forEach((name, index) => {
+    const dot = document.createElement("div")
+    dot.className = "indicator-dot"
+    dot.title = name
+    dot.style.cssText = `
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
     `
 
-  button.addEventListener("click", () => {
-    smoothScrollTo("#home")
+    if (index === 0) {
+      dot.style.background = "var(--accent-color)"
+      dot.style.borderColor = "var(--primary-color)"
+    }
+
+    dot.addEventListener("click", () => {
+      navigator.navigateToSection(index)
+      updateIndicator(index)
+    })
+
+    indicator.appendChild(dot)
   })
 
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 300) {
-      button.style.opacity = "1"
-      button.style.visibility = "visible"
+  document.body.appendChild(indicator)
+  return indicator
+}
+
+function updateIndicator(activeIndex) {
+  const dots = document.querySelectorAll(".indicator-dot")
+  dots.forEach((dot, index) => {
+    if (index === activeIndex) {
+      dot.style.background = "var(--accent-color)"
+      dot.style.borderColor = "var(--primary-color)"
+      dot.style.transform = "scale(1.2)"
     } else {
-      button.style.opacity = "0"
-      button.style.visibility = "hidden"
+      dot.style.background = "rgba(255, 255, 255, 0.3)"
+      dot.style.borderColor = "transparent"
+      dot.style.transform = "scale(1)"
     }
   })
-
-  document.body.appendChild(button)
 }
 
-// Inicializar botão "voltar ao topo"
-createBackToTopButton()
+// Inicializar tudo quando a página carregar
+window.addEventListener("load", () => {
+  // Inicializar navegador de seções
+  window.navigator = new SectionNavigator()
 
-// Performance: debounce para eventos de scroll
-function debounce(func, wait) {
-  let timeout
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout)
-      func(...args)
-    }
-    clearTimeout(timeout)
-    timeout = setTimeout(later, wait)
+  // Criar partículas de fundo
+  createParticles()
+
+  // Criar indicador de seções
+  const indicator = createSectionIndicator()
+
+  // Atualizar indicador quando navegar
+  const originalNavigate = window.navigator.navigateToSection
+  window.navigator.navigateToSection = function (targetIndex) {
+    originalNavigate.call(this, targetIndex)
+    updateIndicator(targetIndex)
   }
-}
 
-// Aplicar debounce ao scroll
-const debouncedScroll = debounce(() => {
-  updateActiveLink()
-}, 10)
+  // Efeito de digitação no título
+  const heroTitle = document.querySelector(".hero-title")
+  if (heroTitle) {
+    const originalText = heroTitle.textContent
+    setTimeout(() => {
+      typeWriter(heroTitle, originalText, 50)
+    }, 500)
+  }
 
-window.addEventListener("scroll", debouncedScroll)
+  console.log("🚀 Nutrein website loaded successfully!")
+  console.log("💡 Use as setas do teclado ou clique na navegação para navegar!")
+})
 
 // Acessibilidade: navegação por teclado
 document.addEventListener("keydown", (e) => {
@@ -260,15 +349,23 @@ document.addEventListener("keydown", (e) => {
   }
 })
 
-// Preloader (opcional)
-window.addEventListener("load", () => {
-  const preloader = document.querySelector(".preloader")
-  if (preloader) {
-    preloader.style.opacity = "0"
-    setTimeout(() => {
-      preloader.style.display = "none"
-    }, 300)
-  }
-})
+// Prevenção de scroll acidental
+document.addEventListener(
+  "wheel",
+  (e) => {
+    e.preventDefault()
+  },
+  { passive: false },
+)
 
-console.log("🚀 Nutrein website loaded successfully!")
+document.addEventListener(
+  "touchmove",
+  (e) => {
+    if (e.target.closest(".section")) {
+      // Permitir scroll dentro das seções se necessário
+      return
+    }
+    e.preventDefault()
+  },
+  { passive: false },
+)

@@ -6,10 +6,15 @@
 }
 
 :root {
-  /* Paleta de cores */
+  /* Paleta de cores expandida */
   --primary-color: #26619c; /* Lápis-lazúli */
   --secondary-color: #fffafa; /* Branco-neve */
   --accent-color: #ffd700; /* Amarelo dourado */
+  --purple-primary: #8a2be2; /* Roxo vibrante */
+  --purple-light: #9370db; /* Roxo médio */
+  --blue-royal: #4169e1; /* Azul royal */
+  --blue-dodger: #1e90ff; /* Azul dodger */
+  --blue-sky: #87ceeb; /* Azul céu */
   --text-dark: #333333;
   --text-light: #666666;
   --bg-light: #f8f9fa;
@@ -23,6 +28,8 @@ body {
   line-height: 1.6;
   color: var(--text-dark);
   background-color: var(--secondary-color);
+  overflow: hidden;
+  height: 100vh;
 }
 
 /* Utilitários */
@@ -33,7 +40,29 @@ body {
 }
 
 .section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(100%);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow-y: auto;
   padding: 80px 0;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.section.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  animation: slideInRight 0.6s ease-out;
+}
+
+.section.prev {
+  transform: translateX(-100%);
 }
 
 .bg-light {
@@ -133,10 +162,14 @@ body {
 /* Hero Section */
 .hero {
   padding: 120px 0 80px;
-  background: linear-gradient(135deg, var(--secondary-color) 0%, var(--bg-light) 100%);
+  background: linear-gradient(135deg, var(--secondary-color) 0%, var(--blue-sky) 30%, var(--purple-light) 100%);
   display: flex;
   align-items: center;
   min-height: 100vh;
+  position: relative;
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
 }
 
 .hero-content {
@@ -168,7 +201,7 @@ body {
   left: 0;
   width: 100%;
   height: 3px;
-  background-color: var(--accent-color);
+  background: linear-gradient(90deg, var(--accent-color), var(--purple-primary));
   animation: slideIn 1s ease-out;
 }
 
@@ -272,7 +305,7 @@ body {
   left: 50%;
   width: 60px;
   height: 3px;
-  background-color: var(--accent-color);
+  background: linear-gradient(90deg, var(--accent-color), var(--blue-royal));
   transform: translateX(-50%);
 }
 
@@ -299,6 +332,7 @@ body {
   overflow: hidden;
   box-shadow: var(--shadow);
   transition: var(--transition);
+  position: relative;
 }
 
 .blog-card:hover {
@@ -351,6 +385,7 @@ body {
   box-shadow: var(--shadow);
   transition: var(--transition);
   text-align: center;
+  position: relative;
 }
 
 .product-card:hover {
@@ -419,6 +454,7 @@ body {
   text-align: center;
   box-shadow: var(--shadow);
   transition: var(--transition);
+  position: relative;
 }
 
 .professional-card:hover {
@@ -458,6 +494,7 @@ body {
   text-align: center;
   box-shadow: var(--shadow);
   transition: var(--transition);
+  position: relative;
 }
 
 .exercise-card:hover {
@@ -468,7 +505,7 @@ body {
 .exercise-icon {
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  background: linear-gradient(135deg, var(--primary-color), var(--purple-primary));
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -498,7 +535,7 @@ body {
 
 /* Footer */
 .footer {
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, var(--primary-color), var(--purple-primary), var(--blue-royal));
   color: white;
   padding: 3rem 0 1rem;
 }
@@ -562,6 +599,100 @@ body {
   padding-top: 2rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.7);
+}
+
+/* Dica de navegação */
+.navigation-hint {
+  margin-top: 2rem;
+  text-align: center;
+  opacity: 0.7;
+  animation: pulse 2s infinite;
+}
+
+.navigation-hint p {
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.navigation-hint i {
+  color: var(--purple-primary);
+  margin-right: 0.5rem;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Botões de navegação entre seções */
+.section-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 3rem;
+  padding: 0 2rem;
+}
+
+.nav-btn {
+  padding: 12px 24px;
+  border: 2px solid var(--primary-color);
+  background: transparent;
+  color: var(--primary-color);
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-btn:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Cards com bordas coloridas */
+.blog-card,
+.product-card,
+.professional-card,
+.exercise-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.blog-card::before,
+.product-card::before,
+.professional-card::before,
+.exercise-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), var(--purple-primary), var(--blue-royal));
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.blog-card:hover::before,
+.product-card:hover::before,
+.professional-card:hover::before,
+.exercise-card:hover::before {
+  opacity: 1;
 }
 
 /* Responsividade */
@@ -629,6 +760,26 @@ body {
     grid-template-columns: 1fr;
     text-align: center;
   }
+
+  .section-indicator {
+    right: 10px;
+    gap: 8px;
+  }
+
+  .indicator-dot {
+    width: 10px !important;
+    height: 10px !important;
+  }
+
+  .navigation-hint {
+    font-size: 0.8rem;
+  }
+
+  .section-navigation {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0 1rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -664,8 +815,15 @@ body {
   }
 }
 
-.section {
-  animation: fadeInUp 0.6s ease-out;
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* Smooth scroll */
@@ -687,4 +845,60 @@ html {
 .btn:focus {
   outline: 2px solid var(--accent-color);
   outline-offset: 2px;
+}
+
+/* Gradientes com nova paleta */
+.exercise-icon {
+  background: linear-gradient(135deg, var(--primary-color), var(--purple-primary));
+}
+
+/* Variações de cores nos cards */
+.blog-card:nth-child(1) {
+  border-top: 4px solid var(--blue-royal);
+}
+
+.blog-card:nth-child(2) {
+  border-top: 4px solid var(--purple-primary);
+}
+
+.blog-card:nth-child(3) {
+  border-top: 4px solid var(--blue-dodger);
+}
+
+.product-card:nth-child(1) .btn-primary {
+  background: linear-gradient(45deg, var(--primary-color), var(--blue-royal));
+}
+
+.product-card:nth-child(2) .btn-primary {
+  background: linear-gradient(45deg, var(--purple-primary), var(--purple-light));
+}
+
+.product-card:nth-child(3) .btn-primary {
+  background: linear-gradient(45deg, var(--blue-dodger), var(--blue-sky));
+}
+
+/* Professional cards com cores alternadas */
+.professional-card:nth-child(odd) {
+  border-left: 4px solid var(--purple-primary);
+}
+
+.professional-card:nth-child(even) {
+  border-left: 4px solid var(--blue-royal);
+}
+
+/* Exercise cards com ícones coloridos */
+.exercise-card:nth-child(1) .exercise-icon {
+  background: linear-gradient(135deg, var(--blue-royal), var(--blue-dodger));
+}
+
+.exercise-card:nth-child(2) .exercise-icon {
+  background: linear-gradient(135deg, var(--purple-primary), var(--purple-light));
+}
+
+.exercise-card:nth-child(3) .exercise-icon {
+  background: linear-gradient(135deg, var(--primary-color), var(--blue-sky));
+}
+
+.exercise-card:nth-child(4) .exercise-icon {
+  background: linear-gradient(135deg, var(--purple-light), var(--blue-royal));
 }
