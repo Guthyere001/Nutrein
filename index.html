@@ -17,21 +17,45 @@
                 </div>
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="#home" class="nav-link active">Home</a>
+                        <a href="#home" class="nav-link active" data-section="0">
+                            <i class="fas fa-home"></i>
+                            <span>Home</span>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#blog" class="nav-link">Blog</a>
+                        <a href="#blog" class="nav-link" data-section="1">
+                            <i class="fas fa-blog"></i>
+                            <span>Blog</span>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#loja" class="nav-link">Loja</a>
+                        <a href="#loja" class="nav-link" data-section="2">
+                            <i class="fas fa-store"></i>
+                            <span>Loja</span>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#profissionais" class="nav-link">Profissionais</a>
+                        <a href="#profissionais" class="nav-link" data-section="3">
+                            <i class="fas fa-user-md"></i>
+                            <span>Profissionais</span>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#exercicios" class="nav-link">Exercícios</a>
+                        <a href="#exercicios" class="nav-link" data-section="4">
+                            <i class="fas fa-dumbbell"></i>
+                            <span>Exercícios</span>
+                        </a>
                     </li>
                 </ul>
+                
+                <!-- Carrinho de Compras -->
+                <div class="cart-container">
+                    <button class="cart-btn" id="cartBtn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                </div>
+
                 <div class="hamburger">
                     <span class="bar"></span>
                     <span class="bar"></span>
@@ -39,24 +63,80 @@
                 </div>
             </div>
         </nav>
+        
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <div class="container">
+                <span class="breadcrumb-item active" id="currentSection">Home</span>
+                <div class="section-counter">
+                    <span id="sectionNumber">1</span> / <span id="totalSections">5</span>
+                </div>
+            </div>
+        </div>
     </header>
+
+    <!-- Modal do Carrinho -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-modal-content">
+            <div class="cart-header">
+                <h3><i class="fas fa-shopping-cart"></i> Meu Carrinho</h3>
+                <button class="close-cart" id="closeCart">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="cart-items" id="cartItems">
+                <div class="empty-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <p>Seu carrinho está vazio</p>
+                    <button class="btn btn-primary" onclick="navigator.navigateToSection(2)">Ir às Compras</button>
+                </div>
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <strong>Total: R$ <span id="cartTotal">0,00</span></strong>
+                </div>
+                <div class="cart-actions">
+                    <button class="btn btn-secondary" id="clearCart">Limpar Carrinho</button>
+                    <button class="btn btn-primary" id="checkout">Finalizar Compra</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controles de Navegação -->
+    <div class="navigation-controls">
+        <button class="nav-control prev-control" id="prevBtn" title="Seção Anterior (←)">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="nav-control next-control" id="nextBtn" title="Próxima Seção (→)">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
 
     <main>
         <!-- Seção Home -->
         <section id="home" class="hero">
             <div class="hero-content">
-                <h1 class="hero-title">Transforme sua vida com <span class="highlight">Nutrein</span></h1>
-                <p class="hero-subtitle">Sua plataforma completa para saúde, esportes e bem-estar. Conecte-se com profissionais especializados e alcance seus objetivos.</p>
-                <div class="hero-buttons">
-                    <button class="btn btn-primary">Começar Agora</button>
-                    <button class="btn btn-secondary">Saiba Mais</button>
+                <div class="hero-text">
+                    <h1 class="hero-title">Transforme sua vida com <span class="highlight">Nutrein</span></h1>
+                    <p class="hero-subtitle">Sua plataforma completa para saúde, esportes e bem-estar. Conecte-se com profissionais especializados e alcance seus objetivos.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="navigator.navigateToSection(2)">
+                            <i class="fas fa-shopping-cart"></i>
+                            Começar Compras
+                        </button>
+                        <button class="btn btn-secondary" onclick="navigator.navigateToSection(1)">
+                            <i class="fas fa-info-circle"></i>
+                            Saiba Mais
+                        </button>
+                    </div>
+                    <div class="navigation-hint">
+                        <p><i class="fas fa-keyboard"></i> Use as setas ← → ou clique na navegação</p>
+                    </div>
                 </div>
-                <div class="navigation-hint">
-                  <p><i class="fas fa-mouse"></i> Clique na navegação ou use as setas do teclado</p>
+                <div class="hero-image">
+                    <img src="/placeholder.svg?height=400&width=600" alt="Pessoas praticando exercícios">
                 </div>
-            </div>
-            <div class="hero-image">
-                <img src="/placeholder.svg?height=400&width=600" alt="Pessoas praticando exercícios">
             </div>
         </section>
 
@@ -91,10 +171,6 @@
                         </div>
                     </article>
                 </div>
-                <div class="section-navigation">
-                  <button class="nav-btn prev-btn"><i class="fas fa-arrow-left"></i> Anterior</button>
-                  <button class="nav-btn next-btn">Próximo <i class="fas fa-arrow-right"></i></button>
-                </div>
             </div>
         </section>
 
@@ -103,38 +179,199 @@
             <div class="container">
                 <h2 class="section-title">Loja</h2>
                 <p class="section-subtitle">Produtos selecionados para sua jornada de bem-estar</p>
-                <div class="products-grid">
-                    <div class="product-card">
-                        <img src="/placeholder.svg?height=250&width=250" alt="Suplementos">
-                        <div class="product-info">
-                            <h3>Suplementos</h3>
-                            <p>Linha completa de suplementos nutricionais</p>
-                            <span class="price">A partir de R$ 49,90</span>
-                            <button class="btn btn-primary">Ver Produtos</button>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <img src="/placeholder.svg?height=250&width=250" alt="Equipamentos">
-                        <div class="product-info">
-                            <h3>Equipamentos</h3>
-                            <p>Acessórios para treino em casa</p>
-                            <span class="price">A partir de R$ 29,90</span>
-                            <button class="btn btn-primary">Ver Produtos</button>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <img src="/placeholder.svg?height=250&width=250" alt="Roupas esportivas">
-                        <div class="product-info">
-                            <h3>Roupas Esportivas</h3>
-                            <p>Vestuário confortável para seus treinos</p>
-                            <span class="price">A partir de R$ 79,90</span>
-                            <button class="btn btn-primary">Ver Produtos</button>
-                        </div>
-                    </div>
+                
+                <!-- Filtros da Loja -->
+                <div class="shop-filters">
+                    <button class="filter-btn active" data-filter="all">
+                        <i class="fas fa-th"></i> Todos
+                    </button>
+                    <button class="filter-btn" data-filter="suplementos">
+                        <i class="fas fa-pills"></i> Suplementos
+                    </button>
+                    <button class="filter-btn" data-filter="equipamentos">
+                        <i class="fas fa-dumbbell"></i> Equipamentos
+                    </button>
+                    <button class="filter-btn" data-filter="roupas">
+                        <i class="fas fa-tshirt"></i> Roupas
+                    </button>
                 </div>
-                <div class="section-navigation">
-                  <button class="nav-btn prev-btn"><i class="fas fa-arrow-left"></i> Anterior</button>
-                  <button class="nav-btn next-btn">Próximo <i class="fas fa-arrow-right"></i></button>
+
+                <div class="products-grid">
+                    <div class="product-card" data-category="suplementos">
+                        <div class="product-badge">
+                            <span class="stock-badge">Em Estoque</span>
+                        </div>
+                        <img src="/placeholder.svg?height=250&width=250" alt="Whey Protein">
+                        <div class="product-info">
+                            <h3>Whey Protein Premium</h3>
+                            <p>Proteína de alta qualidade para ganho de massa muscular</p>
+                            <div class="product-details">
+                                <span class="price">R$ 89,90</span>
+                                <span class="stock">Estoque: <span class="stock-count">25</span></span>
+                            </div>
+                            <div class="product-actions">
+                                <div class="quantity-control">
+                                    <button class="qty-btn minus" data-product="whey-protein">-</button>
+                                    <span class="quantity" data-product="whey-protein">1</span>
+                                    <button class="qty-btn plus" data-product="whey-protein">+</button>
+                                </div>
+                                <button class="btn btn-primary add-to-cart" 
+                                        data-id="whey-protein" 
+                                        data-name="Whey Protein Premium" 
+                                        data-price="89.90" 
+                                        data-stock="25"
+                                        data-image="/placeholder.svg?height=250&width=250">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Adicionar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-category="suplementos">
+                        <div class="product-badge">
+                            <span class="stock-badge">Em Estoque</span>
+                        </div>
+                        <img src="/placeholder.svg?height=250&width=250" alt="Creatina">
+                        <div class="product-info">
+                            <h3>Creatina Monohidratada</h3>
+                            <p>Aumente sua força e resistência nos treinos</p>
+                            <div class="product-details">
+                                <span class="price">R$ 49,90</span>
+                                <span class="stock">Estoque: <span class="stock-count">18</span></span>
+                            </div>
+                            <div class="product-actions">
+                                <div class="quantity-control">
+                                    <button class="qty-btn minus" data-product="creatina">-</button>
+                                    <span class="quantity" data-product="creatina">1</span>
+                                    <button class="qty-btn plus" data-product="creatina">+</button>
+                                </div>
+                                <button class="btn btn-primary add-to-cart" 
+                                        data-id="creatina" 
+                                        data-name="Creatina Monohidratada" 
+                                        data-price="49.90" 
+                                        data-stock="18"
+                                        data-image="/placeholder.svg?height=250&width=250">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Adicionar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-category="equipamentos">
+                        <div class="product-badge">
+                            <span class="stock-badge low-stock">Últimas Unidades</span>
+                        </div>
+                        <img src="/placeholder.svg?height=250&width=250" alt="Halteres">
+                        <div class="product-info">
+                            <h3>Kit Halteres Ajustáveis</h3>
+                            <p>Conjunto completo para treino em casa</p>
+                            <div class="product-details">
+                                <span class="price">R$ 299,90</span>
+                                <span class="stock">Estoque: <span class="stock-count">3</span></span>
+                            </div>
+                            <div class="product-actions">
+                                <div class="quantity-control">
+                                    <button class="qty-btn minus" data-product="halteres">-</button>
+                                    <span class="quantity" data-product="halteres">1</span>
+                                    <button class="qty-btn plus" data-product="halteres">+</button>
+                                </div>
+                                <button class="btn btn-primary add-to-cart" 
+                                        data-id="halteres" 
+                                        data-name="Kit Halteres Ajustáveis" 
+                                        data-price="299.90" 
+                                        data-stock="3"
+                                        data-image="/placeholder.svg?height=250&width=250">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Adicionar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-category="equipamentos">
+                        <div class="product-badge">
+                            <span class="stock-badge">Em Estoque</span>
+                        </div>
+                        <img src="/placeholder.svg?height=250&width=250" alt="Tapete de Yoga">
+                        <div class="product-info">
+                            <h3>Tapete de Yoga Premium</h3>
+                            <p>Antiderrapante e confortável para seus exercícios</p>
+                            <div class="product-details">
+                                <span class="price">R$ 79,90</span>
+                                <span class="stock">Estoque: <span class="stock-count">15</span></span>
+                            </div>
+                            <div class="product-actions">
+                                <div class="quantity-control">
+                                    <button class="qty-btn minus" data-product="tapete-yoga">-</button>
+                                    <span class="quantity" data-product="tapete-yoga">1</span>
+                                    <button class="qty-btn plus" data-product="tapete-yoga">+</button>
+                                </div>
+                                <button class="btn btn-primary add-to-cart" 
+                                        data-id="tapete-yoga" 
+                                        data-name="Tapete de Yoga Premium" 
+                                        data-price="79.90" 
+                                        data-stock="15"
+                                        data-image="/placeholder.svg?height=250&width=250">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Adicionar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-category="roupas">
+                        <div class="product-badge">
+                            <span class="stock-badge">Em Estoque</span>
+                        </div>
+                        <img src="/placeholder.svg?height=250&width=250" alt="Camiseta Esportiva">
+                        <div class="product-info">
+                            <h3>Camiseta Esportiva Dry-Fit</h3>
+                            <p>Tecido respirável para máximo conforto</p>
+                            <div class="product-details">
+                                <span class="price">R$ 59,90</span>
+                                <span class="stock">Estoque: <span class="stock-count">32</span></span>
+                            </div>
+                            <div class="product-actions">
+                                <div class="quantity-control">
+                                    <button class="qty-btn minus" data-product="camiseta">-</button>
+                                    <span class="quantity" data-product="camiseta">1</span>
+                                    <button class="qty-btn plus" data-product="camiseta">+</button>
+                                </div>
+                                <button class="btn btn-primary add-to-cart" 
+                                        data-id="camiseta" 
+                                        data-name="Camiseta Esportiva Dry-Fit" 
+                                        data-price="59.90" 
+                                        data-stock="32"
+                                        data-image="/placeholder.svg?height=250&width=250">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Adicionar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-category="roupas">
+                        <div class="product-badge">
+                            <span class="stock-badge out-of-stock">Esgotado</span>
+                        </div>
+                        <img src="/placeholder.svg?height=250&width=250" alt="Shorts Esportivo">
+                        <div class="product-info">
+                            <h3>Shorts Esportivo Premium</h3>
+                            <p>Ideal para corrida e treinos intensos</p>
+                            <div class="product-details">
+                                <span class="price">R$ 79,90</span>
+                                <span class="stock">Estoque: <span class="stock-count">0</span></span>
+                            </div>
+                            <div class="product-actions">
+                                <button class="btn btn-secondary" disabled>
+                                    <i class="fas fa-times"></i>
+                                    Esgotado
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -156,41 +393,25 @@
                                 <img src="/placeholder.svg?height=150&width=150" alt="Treinador de Handebol">
                                 <h4>Handebol</h4>
                                 <p>Especialistas em técnicas e táticas</p>
+                                <button class="btn btn-outline">Consultar</button>
                             </div>
                             <div class="professional-card">
                                 <img src="/placeholder.svg?height=150&width=150" alt="Treinador de Vôlei">
                                 <h4>Vôlei</h4>
                                 <p>Treinamento técnico e físico</p>
+                                <button class="btn btn-outline">Consultar</button>
                             </div>
                             <div class="professional-card">
                                 <img src="/placeholder.svg?height=150&width=150" alt="Treinador de Basquete">
                                 <h4>Basquete</h4>
                                 <p>Desenvolvimento de habilidades</p>
+                                <button class="btn btn-outline">Consultar</button>
                             </div>
                             <div class="professional-card">
                                 <img src="/placeholder.svg?height=150&width=150" alt="Treinador de Futebol">
                                 <h4>Futebol/Futsal</h4>
                                 <p>Técnica e preparação física</p>
-                            </div>
-                            <div class="professional-card">
-                                <img src="/placeholder.svg?height=150&width=150" alt="Treinador de Boxe">
-                                <h4>Boxe</h4>
-                                <p>Condicionamento e técnica</p>
-                            </div>
-                            <div class="professional-card">
-                                <img src="/placeholder.svg?height=150&width=150" alt="Sensei de Karatê">
-                                <h4>Karatê</h4>
-                                <p>Arte marcial tradicional</p>
-                            </div>
-                            <div class="professional-card">
-                                <img src="/placeholder.svg?height=150&width=150" alt="Treinador de Muay Thai">
-                                <h4>Muay Thai</h4>
-                                <p>Arte marcial tailandesa</p>
-                            </div>
-                            <div class="professional-card">
-                                <img src="/placeholder.svg?height=150&width=150" alt="Professor de Jiu-Jitsu">
-                                <h4>Jiu-Jitsu</h4>
-                                <p>Arte suave brasileira</p>
+                                <button class="btn btn-outline">Consultar</button>
                             </div>
                         </div>
                     </div>
@@ -205,18 +426,16 @@
                                 <img src="/placeholder.svg?height=150&width=150" alt="Ortopedista">
                                 <h4>Ortopedista</h4>
                                 <p>Especialista em lesões esportivas</p>
+                                <button class="btn btn-outline">Consultar</button>
                             </div>
                             <div class="professional-card">
                                 <img src="/placeholder.svg?height=150&width=150" alt="Nutricionista">
                                 <h4>Nutricionista</h4>
                                 <p>Alimentação e performance</p>
+                                <button class="btn btn-outline">Consultar</button>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="section-navigation">
-                  <button class="nav-btn prev-btn"><i class="fas fa-arrow-left"></i> Anterior</button>
-                  <button class="nav-btn next-btn">Próximo <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
         </section>
@@ -260,10 +479,6 @@
                         <button class="btn btn-outline">Ver Treinos</button>
                     </div>
                 </div>
-                <div class="section-navigation">
-                  <button class="nav-btn prev-btn"><i class="fas fa-arrow-left"></i> Anterior</button>
-                  <button class="nav-btn next-btn">Próximo <i class="fas fa-arrow-right"></i></button>
-                </div>
             </div>
         </section>
     </main>
@@ -285,10 +500,10 @@
                 <div class="footer-section">
                     <h4>Links Rápidos</h4>
                     <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#blog">Blog</a></li>
-                        <li><a href="#loja">Loja</a></li>
-                        <li><a href="#profissionais">Profissionais</a></li>
+                        <li><a href="#" onclick="navigator.navigateToSection(0)">Home</a></li>
+                        <li><a href="#" onclick="navigator.navigateToSection(1)">Blog</a></li>
+                        <li><a href="#" onclick="navigator.navigateToSection(2)">Loja</a></li>
+                        <li><a href="#" onclick="navigator.navigateToSection(3)">Profissionais</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">

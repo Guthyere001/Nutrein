@@ -5,6 +5,7 @@ class SectionNavigator {
     this.navLinks = document.querySelectorAll(".nav-link")
     this.currentSection = 0
     this.isAnimating = false
+    this.sectionNames = ["Home", "Blog", "Loja", "Profissionais", "Exercícios"]
 
     this.init()
   }
@@ -46,15 +47,31 @@ class SectionNavigator {
         case "End":
           this.navigateToSection(this.sections.length - 1)
           break
+        case "Escape":
+          const cart = window.cart // Declare the cart variable here
+          if (cart && cart.isModalOpen) {
+            cart.closeModal()
+          }
+          break
       }
     })
 
-    // Botões de navegação nos cards
-    this.setupCardNavigation()
+    // Controles de navegação
+    document.getElementById("prevBtn").addEventListener("click", () => this.prevSection())
+    document.getElementById("nextBtn").addEventListener("click", () => this.nextSection())
+
+    // Atualizar interface inicial
+    this.updateInterface()
   }
 
   navigateToSection(targetIndex) {
-    if (this.isAnimating || targetIndex === this.currentSection) return
+    if (
+      this.isAnimating ||
+      targetIndex === this.currentSection ||
+      targetIndex < 0 ||
+      targetIndex >= this.sections.length
+    )
+      return
 
     this.isAnimating = true
 
@@ -76,6 +93,7 @@ class SectionNavigator {
       // Atualizar navegação ativa
       this.updateActiveNav(targetIndex)
       this.currentSection = targetIndex
+      this.updateInterface()
 
       setTimeout(() => {
         this.isAnimating = false
@@ -99,30 +117,419 @@ class SectionNavigator {
     })
   }
 
-  setupCardNavigation() {
-    // Botões "Ver mais" no blog levam para próxima seção
-    document.querySelectorAll(".read-more").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault()
-        this.nextSection()
-      })
+  updateInterface() {
+    // Atualizar breadcrumb
+    const currentSectionElement = document.getElementById("currentSection")
+    const sectionNumberElement = document.getElementById("sectionNumber")
+    const totalSectionsElement = document.getElementById("totalSections")
+
+    if (currentSectionElement) {
+      currentSectionElement.textContent = this.sectionNames[this.currentSection]
+    }
+    if (sectionNumberElement) {
+      sectionNumberElement.textContent = this.currentSection + 1
+    }
+    if (totalSectionsElement) {
+      totalSectionsElement.textContent = this.sections.length
+    }
+
+    // Atualizar botões de navegação
+    const prevBtn = document.getElementById("prevBtn")
+    const nextBtn = document.getElementById("nextBtn")
+
+    if (prevBtn) {
+      prevBtn.disabled = this.currentSection === 0
+    }
+    if (nextBtn) {
+      nextBtn.disabled = this.currentSection === this.sections.length - 1
+    }
+  }
+}
+
+// Sistema de Carrinho de Compras
+class ShoppingCart {
+  constructor() {
+    this.items = JSON.parse(localStorage.getItem("nutrein_cart")) || []
+    this.isModalOpen = false
+    this.init()
+  }
+
+  init() {
+    // Event listeners
+    document.getElementById("cartBtn").addEventListener("click", () => this.toggleModal())
+    document.getElementById("closeCart").addEventListener("click", () => this.closeModal())
+    document.getElementById("clearCart").addEventListener("click", () => this.clearCart())
+    document.getElementById("checkout").addEventListener("click", () => this.checkout())
+
+    // Event listeners para produtos
+    document.querySelectorAll(".add-to-cart").forEach((btn) => {
+      btn.addEventListener("click", (e) => this.addToCart(e))
     })
 
-    // Botões "Ver Produtos" levam para loja
-    document.querySelectorAll(".product-card .btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault()
-        this.navigateToSection(2) // Seção loja
-      })
+    // Event listeners para controles de quantidade
+    document.querySelectorAll(".qty-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => this.updateQuantity(e))
     })
 
-    // Botões "Ver Treinos" levam para exercícios
-    document.querySelectorAll(".exercise-card .btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault()
-        this.navigateToSection(4) // Seção exercícios
-      })
+    // Fechar modal clicando fora
+    document.getElementById("cartModal").addEventListener("click", (e) => {
+      if (e.target.id === "cartModal") {
+        this.closeModal()
+      }
     })
+
+    this.updateCartDisplay()
+  }
+
+  addToCart(e) {
+    const btn = e.target.closest(".add-to-cart")
+    const productId = btn.dataset.id
+    const productName = btn.dataset.name
+    const productPrice = Number.parseFloat(btn.dataset.price)
+    const productStock = Number.parseInt(btn.dataset.stock)
+    const productImage = btn.dataset.image
+    const quantityElement = document.querySelector(`.quantity[data-product="${productId}"]`)
+    const quantity = Number.parseInt(quantityElement.textContent)
+
+    // Verificar estoque
+    const currentItem = this.items.find((item) => item.id === productId)
+    const currentQuantity = currentItem ? currentItem.quantity : 0
+
+    if (currentQuantity + quantity > productStock) {
+      this.showNotification("Quantidade indisponível em estoque!", "error")
+      return
+    }
+
+    // Adicionar ou atualizar item
+    const existingItemIndex = this.items.findIndex((item) => item.id === productId)
+
+    if (existingItemIndex > -1) {
+      this.items[existingItemIndex].quantity += quantity
+    } else {
+      this.items.push({
+        id: productId,
+        name: productName,
+        price: productPrice,
+        quantity: quantity,
+        image: productImage,
+        stock: productStock,
+      })
+    }
+
+    // Resetar quantidade do produto
+    quantityElement.textContent = "1"
+
+    this.saveCart()
+    this.updateCartDisplay()
+    this.showNotification(`${productName} adicionado ao carrinho!`, "success")
+
+    // Animação do botão
+    btn.style.transform = "scale(0.95)"
+    setTimeout(() => {
+      btn.style.transform = "scale(1)"
+    }, 150)
+  }
+
+  updateQuantity(e) {
+    const btn = e.target
+    const productId = btn.dataset.product
+    const quantityElement = document.querySelector(`.quantity[data-product="${productId}"]`)
+    const isPlus = btn.classList.contains("plus")
+    const isMinus = btn.classList.contains("minus")
+
+    let currentQuantity = Number.parseInt(quantityElement.textContent)
+
+    if (isPlus) {
+      const productCard = btn.closest(".product-card")
+      const stockElement = productCard.querySelector(".stock-count")
+      const maxStock = Number.parseInt(stockElement.textContent)
+
+      if (currentQuantity < maxStock) {
+        currentQuantity++
+      } else {
+        this.showNotification("Quantidade máxima atingida!", "warning")
+        return
+      }
+    } else if (isMinus && currentQuantity > 1) {
+      currentQuantity--
+    }
+
+    quantityElement.textContent = currentQuantity
+
+    // Animação
+    quantityElement.style.transform = "scale(1.2)"
+    setTimeout(() => {
+      quantityElement.style.transform = "scale(1)"
+    }, 150)
+  }
+
+  updateCartQuantity(productId, newQuantity) {
+    const itemIndex = this.items.findIndex((item) => item.id === productId)
+
+    if (itemIndex > -1) {
+      if (newQuantity <= 0) {
+        this.items.splice(itemIndex, 1)
+      } else {
+        // Verificar estoque
+        const item = this.items[itemIndex]
+        if (newQuantity > item.stock) {
+          this.showNotification("Quantidade indisponível em estoque!", "error")
+          return
+        }
+        this.items[itemIndex].quantity = newQuantity
+      }
+
+      this.saveCart()
+      this.updateCartDisplay()
+      this.renderCartItems()
+    }
+  }
+
+  removeFromCart(productId) {
+    this.items = this.items.filter((item) => item.id !== productId)
+    this.saveCart()
+    this.updateCartDisplay()
+    this.renderCartItems()
+    this.showNotification("Item removido do carrinho!", "info")
+  }
+
+  clearCart() {
+    if (this.items.length === 0) return
+
+    if (confirm("Tem certeza que deseja limpar o carrinho?")) {
+      this.items = []
+      this.saveCart()
+      this.updateCartDisplay()
+      this.renderCartItems()
+      this.showNotification("Carrinho limpo!", "info")
+    }
+  }
+
+  toggleModal() {
+    if (this.isModalOpen) {
+      this.closeModal()
+    } else {
+      this.openModal()
+    }
+  }
+
+  openModal() {
+    const modal = document.getElementById("cartModal")
+    modal.classList.add("active")
+    this.isModalOpen = true
+    this.renderCartItems()
+    document.body.style.overflow = "hidden"
+  }
+
+  closeModal() {
+    const modal = document.getElementById("cartModal")
+    modal.classList.remove("active")
+    this.isModalOpen = false
+    document.body.style.overflow = ""
+  }
+
+  renderCartItems() {
+    const cartItemsContainer = document.getElementById("cartItems")
+
+    if (this.items.length === 0) {
+      cartItemsContainer.innerHTML = `
+        <div class="empty-cart">
+          <i class="fas fa-shopping-cart"></i>
+          <p>Seu carrinho está vazio</p>
+          <button class="btn btn-primary" onclick="window.navigator.navigateToSection(2); window.cart.closeModal()">Ir às Compras</button>
+        </div>
+      `
+      return
+    }
+
+    cartItemsContainer.innerHTML = this.items
+      .map(
+        (item) => `
+      <div class="cart-item">
+        <img src="${item.image}" alt="${item.name}">
+        <div class="cart-item-info">
+          <h4>${item.name}</h4>
+          <div class="cart-item-price">R$ ${item.price.toFixed(2).replace(".", ",")}</div>
+        </div>
+        <div class="cart-item-controls">
+          <button class="cart-qty-btn" onclick="window.cart.updateCartQuantity('${item.id}', ${item.quantity - 1})">-</button>
+          <span class="cart-item-quantity">${item.quantity}</span>
+          <button class="cart-qty-btn" onclick="window.cart.updateCartQuantity('${item.id}', ${item.quantity + 1})">+</button>
+          <button class="remove-item" onclick="window.cart.removeFromCart('${item.id}')" title="Remover item">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    `,
+      )
+      .join("")
+  }
+
+  updateCartDisplay() {
+    const cartCount = document.getElementById("cartCount")
+    const cartTotal = document.getElementById("cartTotal")
+
+    const totalItems = this.items.reduce((sum, item) => sum + item.quantity, 0)
+    const totalPrice = this.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+
+    cartCount.textContent = totalItems
+    cartCount.classList.toggle("hidden", totalItems === 0)
+
+    if (cartTotal) {
+      cartTotal.textContent = totalPrice.toFixed(2).replace(".", ",")
+    }
+
+    // Animação do contador
+    if (totalItems > 0) {
+      cartCount.style.animation = "pulse 0.3s ease-in-out"
+      setTimeout(() => {
+        cartCount.style.animation = ""
+      }, 300)
+    }
+  }
+
+  checkout() {
+    if (this.items.length === 0) {
+      this.showNotification("Carrinho vazio!", "warning")
+      return
+    }
+
+    const total = this.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    const itemCount = this.items.reduce((sum, item) => sum + item.quantity, 0)
+
+    if (confirm(`Finalizar compra?\n\n${itemCount} itens\nTotal: R$ ${total.toFixed(2).replace(".", ",")}`)) {
+      // Simular processamento
+      this.showNotification("Processando pedido...", "info")
+
+      setTimeout(() => {
+        this.items = []
+        this.saveCart()
+        this.updateCartDisplay()
+        this.renderCartItems()
+        this.closeModal()
+        this.showNotification("Pedido realizado com sucesso! 🎉", "success")
+      }, 2000)
+    }
+  }
+
+  saveCart() {
+    localStorage.setItem("nutrein_cart", JSON.stringify(this.items))
+  }
+
+  showNotification(message, type = "info") {
+    // Remover notificação existente
+    const existingNotification = document.querySelector(".notification")
+    if (existingNotification) {
+      existingNotification.remove()
+    }
+
+    const notification = document.createElement("div")
+    notification.className = `notification notification-${type}`
+    notification.innerHTML = `
+      <i class="fas fa-${this.getNotificationIcon(type)}"></i>
+      <span>${message}</span>
+    `
+
+    // Estilos da notificação
+    notification.style.cssText = `
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      background: ${this.getNotificationColor(type)};
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    `
+
+    document.body.appendChild(notification)
+
+    // Animação de entrada
+    setTimeout(() => {
+      notification.style.transform = "translateX(0)"
+    }, 100)
+
+    // Remover após 3 segundos
+    setTimeout(() => {
+      notification.style.transform = "translateX(100%)"
+      setTimeout(() => {
+        notification.remove()
+      }, 300)
+    }, 3000)
+  }
+
+  getNotificationIcon(type) {
+    const icons = {
+      success: "check-circle",
+      error: "exclamation-circle",
+      warning: "exclamation-triangle",
+      info: "info-circle",
+    }
+    return icons[type] || "info-circle"
+  }
+
+  getNotificationColor(type) {
+    const colors = {
+      success: "#28a745",
+      error: "#dc3545",
+      warning: "#ffc107",
+      info: "#17a2b8",
+    }
+    return colors[type] || "#17a2b8"
+  }
+}
+
+// Sistema de Filtros da Loja
+class ShopFilters {
+  constructor() {
+    this.init()
+  }
+
+  init() {
+    document.querySelectorAll(".filter-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => this.filterProducts(e))
+    })
+  }
+
+  filterProducts(e) {
+    const filterBtn = e.target.closest(".filter-btn")
+    const filter = filterBtn.dataset.filter
+
+    // Atualizar botão ativo
+    document.querySelectorAll(".filter-btn").forEach((btn) => {
+      btn.classList.remove("active")
+    })
+    filterBtn.classList.add("active")
+
+    // Filtrar produtos
+    const products = document.querySelectorAll(".product-card")
+
+    products.forEach((product) => {
+      const category = product.dataset.category
+
+      if (filter === "all" || category === filter) {
+        product.classList.remove("hidden")
+        product.style.display = "block"
+      } else {
+        product.classList.add("hidden")
+        setTimeout(() => {
+          product.style.display = "none"
+        }, 300)
+      }
+    })
+
+    // Animação dos filtros
+    filterBtn.style.transform = "scale(0.95)"
+    setTimeout(() => {
+      filterBtn.style.transform = "scale(1)"
+    }, 150)
   }
 }
 
@@ -182,151 +589,16 @@ function typeWriter(element, text, speed = 100) {
   type()
 }
 
-// Contador animado para estatísticas
-function animateCounter(element, target, duration = 2000) {
-  let start = 0
-  const increment = target / (duration / 16)
-
-  function updateCounter() {
-    start += increment
-    if (start < target) {
-      element.textContent = Math.floor(start)
-      requestAnimationFrame(updateCounter)
-    } else {
-      element.textContent = target
-    }
-  }
-
-  updateCounter()
-}
-
-// Partículas de fundo animadas
-function createParticles() {
-  const particlesContainer = document.createElement("div")
-  particlesContainer.className = "particles-container"
-  particlesContainer.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
-  `
-
-  for (let i = 0; i < 50; i++) {
-    const particle = document.createElement("div")
-    particle.className = "particle"
-    particle.style.cssText = `
-      position: absolute;
-      width: ${Math.random() * 4 + 2}px;
-      height: ${Math.random() * 4 + 2}px;
-      background: ${["#26619c", "#8A2BE2", "#4169E1", "#1E90FF"][Math.floor(Math.random() * 4)]};
-      border-radius: 50%;
-      opacity: ${Math.random() * 0.5 + 0.2};
-      left: ${Math.random() * 100}%;
-      top: ${Math.random() * 100}%;
-      animation: float ${Math.random() * 10 + 5}s infinite linear;
-    `
-    particlesContainer.appendChild(particle)
-  }
-
-  document.body.appendChild(particlesContainer)
-}
-
-// CSS para animação das partículas
-const particleStyles = document.createElement("style")
-particleStyles.textContent = `
-  @keyframes float {
-    0% {
-      transform: translateY(100vh) rotate(0deg);
-    }
-    100% {
-      transform: translateY(-100vh) rotate(360deg);
-    }
-  }
-`
-document.head.appendChild(particleStyles)
-
-// Indicador de seção atual
-function createSectionIndicator() {
-  const indicator = document.createElement("div")
-  indicator.className = "section-indicator"
-  indicator.style.cssText = `
-    position: fixed;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  `
-
-  const sections = ["Home", "Blog", "Loja", "Profissionais", "Exercícios"]
-  sections.forEach((name, index) => {
-    const dot = document.createElement("div")
-    dot.className = "indicator-dot"
-    dot.title = name
-    dot.style.cssText = `
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
-    `
-
-    if (index === 0) {
-      dot.style.background = "var(--accent-color)"
-      dot.style.borderColor = "var(--primary-color)"
-    }
-
-    dot.addEventListener("click", () => {
-      navigator.navigateToSection(index)
-      updateIndicator(index)
-    })
-
-    indicator.appendChild(dot)
-  })
-
-  document.body.appendChild(indicator)
-  return indicator
-}
-
-function updateIndicator(activeIndex) {
-  const dots = document.querySelectorAll(".indicator-dot")
-  dots.forEach((dot, index) => {
-    if (index === activeIndex) {
-      dot.style.background = "var(--accent-color)"
-      dot.style.borderColor = "var(--primary-color)"
-      dot.style.transform = "scale(1.2)"
-    } else {
-      dot.style.background = "rgba(255, 255, 255, 0.3)"
-      dot.style.borderColor = "transparent"
-      dot.style.transform = "scale(1)"
-    }
-  })
-}
-
 // Inicializar tudo quando a página carregar
 window.addEventListener("load", () => {
   // Inicializar navegador de seções
   window.navigator = new SectionNavigator()
 
-  // Criar partículas de fundo
-  createParticles()
+  // Inicializar carrinho de compras
+  window.cart = new ShoppingCart()
 
-  // Criar indicador de seções
-  const indicator = createSectionIndicator()
-
-  // Atualizar indicador quando navegar
-  const originalNavigate = window.navigator.navigateToSection
-  window.navigator.navigateToSection = function (targetIndex) {
-    originalNavigate.call(this, targetIndex)
-    updateIndicator(targetIndex)
-  }
+  // Inicializar filtros da loja
+  window.shopFilters = new ShopFilters()
 
   // Efeito de digitação no título
   const heroTitle = document.querySelector(".hero-title")
@@ -338,7 +610,8 @@ window.addEventListener("load", () => {
   }
 
   console.log("🚀 Nutrein website loaded successfully!")
-  console.log("💡 Use as setas do teclado ou clique na navegação para navegar!")
+  console.log("🛒 Sistema de carrinho ativo!")
+  console.log("⌨️ Use as setas ← → ou clique na navegação!")
 })
 
 // Acessibilidade: navegação por teclado
@@ -353,7 +626,10 @@ document.addEventListener("keydown", (e) => {
 document.addEventListener(
   "wheel",
   (e) => {
-    e.preventDefault()
+    // Permitir scroll apenas dentro do modal do carrinho
+    if (!e.target.closest(".cart-modal") && !e.target.closest(".section.active")) {
+      e.preventDefault()
+    }
   },
   { passive: false },
 )
@@ -361,11 +637,9 @@ document.addEventListener(
 document.addEventListener(
   "touchmove",
   (e) => {
-    if (e.target.closest(".section")) {
-      // Permitir scroll dentro das seções se necessário
-      return
+    if (!e.target.closest(".cart-modal") && !e.target.closest(".section.active")) {
+      e.preventDefault()
     }
-    e.preventDefault()
   },
   { passive: false },
 )
